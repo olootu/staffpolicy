@@ -1,0 +1,14 @@
+input, label {
+    display: block;
+}
+
+input {
+    margin-bottom: 1em;
+}
+
+form {
+    width: 70rem;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    padding: 1em;
+}
