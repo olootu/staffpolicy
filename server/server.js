@@ -50,7 +50,7 @@ app.get('/', (req, res) => {
 
 app.post('/add_user', async(req, res) => {
 
-    const { name, email, username, password } = req.body;
+    const { name, email, username, password, role } = req.body;
 
     // Basic validation
     if (!name || !email || !username || !password) {
@@ -73,8 +73,8 @@ app.post('/add_user', async(req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // Insert user
-        const sql = "INSERT INTO staff_users (name, email, username, password) VALUES (?, ?, ?, ?)";
-        const values = [name, email, username, hashedPassword];
+        const sql = "INSERT INTO staff_users (name, email, username, password,role) VALUES (?, ?, ?, ?, ?)";
+        const values = [name, email, username, hashedPassword, role];
 
         db.query(sql, values, (err, result) => {
             if (err) {
@@ -137,7 +137,7 @@ app.post('/login', (req, res) => {
             { expiresIn: '1h' } // Token lasts 1 hour
         );
 
-        return res.json({ token, user: { id: user.id, logUsername: user.username , name: user.name, email: user.email} });
+        return res.json({ token,  id: user.id, logUsername: user.username , name: user.name, email: user.email, role: user.role });
     });
 });
 
@@ -160,6 +160,44 @@ app.get('/proxy-pdf', async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch PDF' });
     }
   });
+
+
+// confirmation by staff that they have read the document
+app.post('/confirm-read', (req, res) => {
+  const { profile, documentUrl, timestamp } = req.body;
+
+  const doc_name = documentUrl.substring(60, documentUrl.indexOf('.pdf'));
+
+  console.log(profile.user.name);
+
+  const sql = `
+    INSERT INTO document_confirmations (user, document_name, document_url, timestamp)
+    VALUES (?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE timestamp = ?
+  `;
+
+  const values = [profile.user.name, doc_name, documentUrl, timestamp, timestamp];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error("DB error:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    res.json({ success: true });
+  });
+});
+
+// get all read documents by staff
+app.get('/get-read-documents', (req, res) => {
+    const sql = "SELECT * FROM document_confirmations ORDER BY timestamp DESC";
+    db.query(sql, (err, results) => {
+      if (err) return res.status(500).json({ error: 'DB error' });
+      res.json(results);
+    });
+  });
+  
+
   
 
 app.listen(8080, () => {

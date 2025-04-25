@@ -1,8 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
+import './home.css';
+import { userContext } from '../../Context/Context';
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 
@@ -15,6 +17,8 @@ const Home = () => {
   const [pdfUrls, setPdfUrls] = useState<string[]>([]);
   const [pdfCache, setPdfCache] = useState<{ [url: string]: string }>({});
   const [readStatus, setReadStatus] = useState<{ [url: string]: boolean }>({});
+
+   const profile = useContext(userContext);
 
 
   async function fetchData() {
@@ -90,6 +94,29 @@ const Home = () => {
 
   if (isLoading) return <div>Loading...</div>;
 
+  const confirmPdfIsRead = async (url: string) => {
+  
+    try {
+      const res = await fetch("http://localhost:8080/confirm-read", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          profile,
+          documentUrl: url,
+          timestamp: new Date().toISOString(),
+        }),
+      });
+  
+      const result = await res.json();
+      console.log("Confirmation stored:", result);
+    } catch (err) {
+      console.error("Error saving confirmation:", err);
+    }
+  };
+  
+
   return (
     <div>
       <h2>Policy Documents</h2>
@@ -102,8 +129,9 @@ const Home = () => {
       ))} */}
 
 {Object.entries(pdfCache).map(([url, blobUrl], idx) => (
-  <div key={idx} style={{ marginBottom: "2rem" }}>
-    <h4>Document {idx + 1}</h4>
+  <div className='doc' key={idx} style={{ marginBottom: "2rem" }}>
+    <h4>No: {idx + 1}</h4>
+   <h2 className='title'> {url.substring(60, url.indexOf('.pdf'))}</h2>
     <div
       onScroll={(e) => handleScroll(e, url)}
       style={{ height: "500px", overflowY: "scroll", border: "1px solid #ccc" }}
@@ -113,12 +141,13 @@ const Home = () => {
         {/* Add more pages here if needed */}
       </Document>
     </div>
-    <label style={{ display: 'block', marginTop: '1rem' }}>
-      <input
+    <label className='flex mt-2 bg-slate-200 pl-4'>
+      <input className='mt-2 mr-2'
         type="checkbox"
         disabled={!readStatus[url]}
-        onChange={() => console.log(`Confirmed read for ${url}`)}
+        onChange={() => confirmPdfIsRead(url)}
       />
+
       I have read and agree to this document.
     </label>
   </div>

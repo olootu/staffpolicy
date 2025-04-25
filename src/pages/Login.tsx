@@ -1,8 +1,9 @@
-import { SignIn } from "../components/SignIn/SignIn"
+import { Register } from "../components/Register/Register"
+// import { SignIn } from "../components/SignIn/Register"
 
 const Login = () => {
   return (
-   <SignIn />
+   <Register />
   )
 }
 

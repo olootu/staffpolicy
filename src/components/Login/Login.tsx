@@ -1,65 +1,41 @@
 
 import axios from 'axios';
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { userContext } from '../../Context/Context';
 
 const Login = () => {
     const [logUsername, setLogUsername] = useState('');
     const [logPassword, setLogPassword] = useState('');
+    const { setUser } = useContext(userContext);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        // const response = await fetch('http://localhost:9000/login', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({ logUsername, logPassword })
-        // });
-
-        // return await response.json();
-
-        // const res = await fetch('http://localhost:8080/login', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({ logUsername, logPassword })
-        // });
-    
-        // const data = await res.json();
-    
-        // if (res.ok) {
-        //     localStorage.setItem('token', data.token);
-        //     // redirect or set auth context
-        // } else {
-        //     alert(data.message);
-        // }
-
         const formData = {
-           logPassword,
-           logUsername
-          }
-          // const navigate = useNavigate();
-          axios.post('http://localhost:8080/login', formData).
+            logPassword,
+            logUsername
+        }
+        axios.post('http://localhost:8080/login', formData).
             then((res) => {
-              //this console.log will be in our frontend console
-            localStorage.setItem('token', JSON.stringify(res.data));
-              console.log(res.data);
+                localStorage.setItem('token', JSON.stringify(res.data));
+                setUser(res.data);// userContext update
+                console.log(res.data);
+                navigate('/dashboard');
             })
             .catch((err) => console.log(err));
-          // apiCall(formData);
-          // setName('');
-          // setEmail('');
-          // setUsername('');
-          // setPassword('');
-      
+
+        setLogUsername('');
+        setLogPassword('');
+
     }
-    // if (isLoading) {
-    //     return <div>Loading...</div>
-    // }
-    // console.log(data)
 
     return (
-        <div>
+        <div className='bg-black text-white pb-7 align-middle'>
+            <h1>Login</h1>
             <form onSubmit={handleSubmit}>
                 <input
-                className='text-black'
+                    className='text-black'
                     name='log_username'
                     id='log_username'
                     type='text'
@@ -68,10 +44,10 @@ const Login = () => {
                     onChange={(e) => setLogUsername(e.target.value)}
                 />
 
-                <label htmlFor='log_password'>Password: *</label>
+                {/* <label htmlFor='log_password'>Password: *</label> */}
                 {/* {showError && <span className='formError'>{errorMsg}</span>} */}
                 <input
-                className='text-black'
+                    className='text-black'
                     name='log_password'
                     placeholder='Type your Password'
                     id='log_paasword'
