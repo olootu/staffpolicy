@@ -7,7 +7,7 @@ const AdminContent = () => {
     const { data, isLoading } = useQuery({
         queryKey: ['confirmations'],
         queryFn: async () => {
-            const res = await fetch('http://localhost:8080/get-read-documents');
+            const res = await fetch('https://staffpolicy-nodeserver.onrender.com/get-read-documents');
             return res.json();
         }
     });

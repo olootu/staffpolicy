@@ -29,7 +29,7 @@ export const Register = () => {
       role
     }
 
-    axios.post('http://localhost:8080/add_user', formData).
+    axios.post('https://staffpolicy-nodeserver.onrender.com/add_user', formData).
       then((res) => {
         console.log(res);
 

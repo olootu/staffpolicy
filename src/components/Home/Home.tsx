@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
@@ -14,7 +14,7 @@ const Home = () => {
     queryKey: ['docs']
   });
 
-  const [pdfUrls, setPdfUrls] = useState<string[]>([]);
+ 
   const [pdfCache, setPdfCache] = useState<{ [url: string]: string }>({});
   const [readStatus, setReadStatus] = useState<{ [url: string]: boolean }>({});
 
@@ -39,7 +39,7 @@ const Home = () => {
   
       try {
         const encodedUrl = encodeURIComponent(url);
-        const res = await fetch(`http://localhost:8080/proxy-pdf?url=${encodedUrl}`);
+        const res = await fetch(`https://staffpolicy-nodeserver.onrender.com/proxy-pdf?url=${encodedUrl}`);
         const blob = await res.blob();
         const objectUrl = URL.createObjectURL(blob);
         newCache[url] = objectUrl;
@@ -66,7 +66,7 @@ const Home = () => {
   //   for (const url of pdfLinks) {
   //     try {
   //       const encodedUrl = encodeURIComponent(url);
-  //       const res = await fetch(`http://localhost:8080/proxy-pdf?url=${encodedUrl}`);
+  //       const res = await fetch(`https://staffpolicy-nodeserver.onrender.com/proxy-pdf?url=${encodedUrl}`);
   //       const blob = await res.blob();
   //       const objectUrl = URL.createObjectURL(blob);
   //       blobs.push(objectUrl);
@@ -97,7 +97,7 @@ const Home = () => {
   const confirmPdfIsRead = async (url: string) => {
   
     try {
-      const res = await fetch("http://localhost:8080/confirm-read", {
+      const res = await fetch("https://staffpolicy-nodeserver.onrender.com/confirm-read", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -285,7 +285,7 @@ export default Home
 //     for (const url of pdfLinks) {
 //       try {
 //         const encodedUrl = encodeURIComponent(url);
-//         const res = await fetch(`http://localhost:8080/proxy-pdf?url=${encodedUrl}`);
+//         const res = await fetch(`https://staffpolicy-nodeserver.onrender.com/proxy-pdf?url=${encodedUrl}`);
 //         const blob = await res.blob();
 //         const objectUrl = URL.createObjectURL(blob);
 //         blobs.push(objectUrl);
@@ -344,7 +344,7 @@ export default Home
 
 //   // const fetchAndSetBlob = async () => {
 //   //   const remotePdfUrl = encodeURIComponent(`${data[0].source_url}`);
-//   //   const res = await fetch(`http://localhost:8080/proxy-pdf?url=${remotePdfUrl}`);
+//   //   const res = await fetch(`https://staffpolicy-nodeserver.onrender.com/proxy-pdf?url=${remotePdfUrl}`);
 //   //   const blob = await res.blob();
 //   //   const objectUrl = URL.createObjectURL(blob);
 //   //   setPdfUrl(objectUrl);
