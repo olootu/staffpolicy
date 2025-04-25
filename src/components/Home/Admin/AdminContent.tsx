@@ -32,16 +32,16 @@ const AdminContent = () => {
                 <table className="w-full border mt-6">
                     <thead className='text-left'>
                         <tr>
-                            <th>User</th>
                             <th>Document</th>
+                            <th>Read by</th>
                             <th>Read on</th>
                         </tr>
                     </thead>
                     <tbody>
                         {data?.map((row: any, i: number) => (
                             <tr key={i}>
-                                <td>{row.user}</td>
                                 <td><a className='text-blue-500' href={row.document_url} target='_blank'>{row.document_name}</a></td>
+                                <td>{row.user}</td>
                                 <td>{new Date(row.timestamp).toLocaleString()}</td>
                             </tr>
                         ))}
