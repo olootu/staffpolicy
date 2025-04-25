@@ -1,6 +1,6 @@
 // /pages/Admin.tsx
 import { useQuery } from '@tanstack/react-query';
-import { Register } from '../../Register/Register';
+import { Register } from '../Register/Register';
 import { useState } from 'react';
 
 const AdminContent = () => {

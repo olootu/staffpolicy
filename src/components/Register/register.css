@@ -2,13 +2,17 @@ input, label {
     display: block;
 }
 
-input {
+input, select {
     margin-bottom: 1em;
+    height: 2.5rem;
+    width: 20rem;
+    margin: 0 auto;
+    margin-bottom: 20px;
 }
 
 form {
-    width: 70rem;
+    width: 30rem;
     margin: 0 auto;
     border: 1px solid #ddd;
-    padding: 1em;
+    padding: 1em; 
 }

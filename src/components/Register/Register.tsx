@@ -2,7 +2,6 @@ import axios from 'axios';
 import { useContext, useState } from 'react';
 import './register.css'
 import { useNavigate } from 'react-router-dom';
-import Login from '../Login/Login';
 import { userContext } from '../../Context/Context';
 
 
@@ -40,26 +39,20 @@ export const Register = () => {
   };
 
   return (
-    <>
-      <div className='mb-10 mt-10'>
-        <Login />
-      </div>
-
-      <div className='bg-blue-900 text-white'>
+      <div className='bg-blue-900 pb-4 mt-2 text-white'>
         <h1>Register</h1>
         <form onSubmit={handleSubmit}>
-          <label htmlFor='name'>Name: </label>
           <input
             className='text-black'
             name='name'
             id='name'
             type='text'
-            placeholder='Type your review'
+            placeholder='Type your name'
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
 
-          <label htmlFor='email'>Email: *</label>
+        
           <input
             className='text-black'
             name='email'
@@ -68,7 +61,6 @@ export const Register = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <label htmlFor='username'>Username: </label>
           <input
             className='text-black'
             name='username'
@@ -79,7 +71,7 @@ export const Register = () => {
             onChange={(e) => setUsername(e.target.value)}
           />
 
-          <label htmlFor='password'>Password: </label>
+        
           <input
             className='text-black'
             name='password'
@@ -89,7 +81,7 @@ export const Register = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <select className='text-black w-44' value={role} onChange={(e) => setRole(e.target.value)}>
+          <select className='text-black ml-16' value={role} onChange={(e) => setRole(e.target.value)}>
             <option value="staff">Staff</option>
             {isAdmin && (
               <option value="admin">Admin</option>
@@ -97,12 +89,11 @@ export const Register = () => {
           </select>
           <br />
           <br />
-          <button type='submit' className='join-send bg-green-800 text-white p-4 rounded'>
-            Submit
+          <button type='submit' className='relative bottom-0 left-80 bg-blue-600 text-white p-2 rounded'>
+            Register
           </button>
         </form>
       </div>
-    </>
   )
 
 }

@@ -5,7 +5,7 @@ import NavBar from "./components/NavBar/NavBar";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { UserProvider } from "./Context/Context";
 import Admin from "./pages/Admin";
-import { Register } from "./components/Register/Register";
+import Login from "./pages/Login";
 
 
 const queryClient = new QueryClient();
@@ -18,7 +18,7 @@ export default function App() {
       <Router>
         <NavBar />
         <Routes>
-          <Route path="/login" element={<Register />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
           <Route path="/policy" element={isAuthenticated ? <PolicyViewer /> : <Navigate to="/login" />} />
           <Route path="/admin" element={isAuthenticated ? <Admin /> : <Navigate to="/login" />} />

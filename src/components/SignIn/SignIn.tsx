@@ -4,7 +4,7 @@ import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { userContext } from '../../Context/Context';
 
-const Login = () => {
+const SignIn = () => {
     const [logUsername, setLogUsername] = useState('');
     const [logPassword, setLogPassword] = useState('');
     const { setUser } = useContext(userContext);
@@ -31,9 +31,11 @@ const Login = () => {
     }
 
     return (
-        <div className='bg-black text-white pb-7 align-middle'>
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit}>
+        <div className='bg-blue-900 mt-10 m-6 text-white pb-7'>
+            {/*  mr-64 pl-10 pr-10 bg-blue-700-50 */}
+            <h1 className='relative left-96 mb-3'>Login</h1>
+            <form className='relative' onSubmit={handleSubmit}>
+               
                 <input
                     className='text-black'
                     name='log_username'
@@ -54,7 +56,7 @@ const Login = () => {
                     value={logPassword}
                     onChange={(e) => setLogPassword(e.target.value)}
                 />
-                <button type='submit' className='join-send bg-green-800 text-white p-4 rounded'>
+                <button type='submit' className='relative bottom-0 left-80 bg-blue-600 text-white p-2 rounded'>
                     Login
                 </button>
             </form>
@@ -62,4 +64,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default SignIn

@@ -1,4 +1,4 @@
-import AdminContent from "../components/Home/Admin/AdminContent"
+import AdminContent from "../components/Admin/AdminContent"
 
 function Admin() {
   return (

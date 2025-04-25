@@ -119,14 +119,7 @@ const Home = () => {
 
   return (
     <div>
-      <h2>Policy Documents</h2>
-      {/* {pdfUrls.map((pdfUrl, idx) => (
-        <div key={idx} style={{ marginBottom: "2rem" }}>
-          <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
-            <Page pageNumber={1} />
-          </Document>
-        </div>
-      ))} */}
+      <h2 className='text-xl ml-80 mb-10 mt-6 font-bold'>Policy Documents</h2>
 
 {Object.entries(pdfCache).map(([url, blobUrl], idx) => (
   <div className='doc' key={idx} style={{ marginBottom: "2rem" }}>
@@ -141,15 +134,17 @@ const Home = () => {
         {/* Add more pages here if needed */}
       </Document>
     </div>
-    <label className='flex mt-2 bg-slate-200 pl-4'>
-      <input className='mt-2 mr-2'
+    <div className='flex pt-2 bg-blue-900 text-white '>
+    <input className=''
         type="checkbox"
         disabled={!readStatus[url]}
         onChange={() => confirmPdfIsRead(url)}
       />
-
-      I have read and agree to this document.
+    <label className='mt-2'>
+      I confirm that I have read this document.
     </label>
+  
+      </div>
   </div>
 ))}
 
