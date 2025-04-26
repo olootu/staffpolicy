@@ -18,11 +18,12 @@ const NavBar = () => {
 
   return (
     <div className="navbar pt-4 h-16 flex gap-10 bg-black text-white justify-center">
-      {isAuthenticated ? (
-        <>
-        <div>
+      <div>
           <img className='h-10 w-auto rounded' src={'Bluebirds-childcare-logo-small-1.png'} alt='' />
         </div>
+      {isAuthenticated ? (
+        <>
+        
           <Link to="/">Home</Link>
           <button className="mb-10" onClick={logOut}>Logout</button>
           {isAdmin && <Link to="/admin">Admin</Link>}
