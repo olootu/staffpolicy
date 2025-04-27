@@ -9,6 +9,7 @@ import { userContext } from '../../Context/Context';
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 
 const Home = () => {
+
   const { data, isLoading } = useQuery({
     queryFn: fetchData,
     queryKey: ['docs']
@@ -22,9 +23,7 @@ const Home = () => {
 
   async function fetchData() {
     const response = await fetch(
-      // 'https://bluebirdschildcare.co.uk/wp-json/wp/v2/media?per_page=100'
-      //  'https://bluebirdschildcare.co.uk/wp-json/wp/v2/media?media_category=policydocs&per_page=100&page=1&orderby=date'
-      'https://bluebirdschildcare.co.uk/wp-json/wp/v2/media?search=.pdf&mmedia_category=policydocs&per_page=100&page=1&orderby=date&order=desc&_fields=id,title,source_url,media_category,mime_type,date'
+      `https://bluebirdschildcare.co.uk/wp-json/wp/v2/media?search=.pdf&mmedia_category=policydocs&per_page=100&page=1&orderby=date&order=desc&_fields=id,title,source_url,media_category,mime_type,date`
 
     );
     const data = await response.json();

@@ -3,6 +3,7 @@ import { useContext, useState } from 'react';
 import './register.css'
 import { useNavigate } from 'react-router-dom';
 import { userContext } from '../../Context/Context';
+import { useMutation } from '@tanstack/react-query';
 
 
 export const Register = () => {
@@ -18,23 +19,24 @@ export const Register = () => {
 
   const isAdmin = isAuthenticated && profile.user?.role === 'admin';
   const navigate = useNavigate();
+
+  const formData = {
+    name,
+    email,
+    username,
+    password,
+    role
+  }
+
+  const mutation = useMutation({
+    mutationFn: () =>  axios.post('https://staffpolicy-nodeserver.onrender.com/add_user', formData)
+  })
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const formData = {
-      name,
-      email,
-      username,
-      password,
-      role
-    }
-
-    axios.post('https://staffpolicy-nodeserver.onrender.com/add_user', formData).
-      then((res) => {
-        console.log(res);
-
-        navigate('/');
-      })
-      .catch((err) => console.log(err));
+   
+    mutation.mutate();
+    navigate('/');
 
   };
 

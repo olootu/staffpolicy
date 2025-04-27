@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import NavBar from "./components/NavBar/NavBar";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { userContext, UserProvider } from "./Context/Context";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
 import { useContext } from "react";
@@ -18,7 +19,7 @@ function AppContent() {
     <Router>
       <NavBar />
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={!user ?<Login />: <Navigate to="/dashboard" />} />
         <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="/policy" element={user ? <PolicyViewer /> : <Navigate to="/login" />} />
         <Route path="/admin" element={user?.role === 'admin' ? <Admin /> : <Navigate to="/dashboard" />} />
@@ -33,6 +34,7 @@ export default function App() {
     <UserProvider>
       <QueryClientProvider client={queryClient}>
         <AppContent />
+        <ReactQueryDevtools />
       </QueryClientProvider>
     </UserProvider>
   );
