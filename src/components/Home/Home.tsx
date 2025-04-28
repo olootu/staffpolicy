@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useContext, useEffect, useState } from 'react';
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
@@ -9,31 +9,39 @@ import { userContext } from '../../Context/Context';
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 
 const Home = () => {
+  const [page, setPage] = useState(1);
 
   const { data, isLoading } = useQuery({
+    queryKey: ['docs', page],
     queryFn: fetchData,
-    queryKey: ['docs']
+    placeholderData: keepPreviousData
   });
 
 
   const [pdfCache, setPdfCache] = useState<{ [url: string]: string }>({});
   const [readStatus, setReadStatus] = useState<{ [url: string]: boolean }>({});
+  const [pdfLoading, setPdfLoading] = useState(true);
 
   const profile = useContext(userContext);
 
   async function fetchData() {
     const response = await fetch(
-      `https://bluebirdschildcare.co.uk/wp-json/wp/v2/media?search=.pdf&mmedia_category=policydocs&per_page=100&page=1&orderby=date&order=desc&_fields=id,title,source_url,media_category,mime_type,date`
+      `https://bluebirdschildcare.co.uk/wp-json/wp/v2/media?search=.pdf&media_category=policydocs&per_page=100&page=${page}&orderby=date&order=desc&_fields=id,title,source_url,media_category,mime_type,date`
 
     );
-    const data = await response.json();
+    if (!response.ok) throw new Error('Failed to fetch');
+    const total = response.headers.get('X-WP-Total'); // total items
+    const totalPages = response.headers.get('X-WP-TotalPages'); // total pages
+    const data2 = await response.json();
 
-    const filtered = data.filter((item: any) => {
+    const filtered = data2.filter((item: any) => {
       if (!item.media_category) return false;
       return item.media_category.some((cat: any) => cat.slug === "policydocs");
     });
     console.log(filtered)
-    return filtered;
+    console.log('total', total)
+    console.log('total Pages', totalPages)
+    return { filtered, total: Number(total), totalPages: Number(totalPages) }//filtered;
   }
 
 
@@ -68,8 +76,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (data && Array.isArray(data)) {
-      const pdfLinks = data
+    if (data && Array.isArray(data.filtered)) {
+      const pdfLinks = data.filtered
         .filter((item: any) => item.mime_type === 'application/pdf')
         .map((item: any) => item.source_url);
 
@@ -77,8 +85,8 @@ const Home = () => {
     }
   }, [data]);
 
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    console.log(`Loaded PDF with ${numPages} page(s)`);
+  const onDocumentLoadSuccess = () => {
+    setPdfLoading(false)
   };
 
   if (isLoading) {
@@ -114,7 +122,20 @@ const Home = () => {
 
   return (
     <div>
-      <h2 className='text-xl ml-96 mb-10 mt-6 font-bold'>Policy Documents</h2>
+      {pdfLoading &&
+        <div className="flex justify-center items-center h-screen">
+          <h2 className='text-xl font-bold'>Please wait...</h2>
+        </div>
+      }
+
+      {!pdfLoading && <h2 className='text-xl ml-96 mb-10 mt-6 font-bold'>Policy Documents</h2>}
+
+      {/* Pagination - Top */}
+      {!pdfLoading && <div className="flex gap-4 ml-96 mt-4 mb-4">
+        <button className='bg-black text-white p-2' disabled={page === 1} onClick={() => setPage(prev => prev - 1)}>Previous</button>
+        <span>Page {page} of {data?.totalPages}</span>
+        <button className='bg-black text-white p-2' disabled={page === data?.totalPages} onClick={() => setPage(prev => prev + 1)}>Next</button>
+      </div>}
 
       {Object.entries(pdfCache).map(([url, blobUrl], idx) => (
         <div className='doc' key={idx} style={{ marginBottom: "2rem" }}>
@@ -142,6 +163,12 @@ const Home = () => {
           </div>
         </div>
       ))}
+    {/* Pagination - Bottom */}
+      {!pdfLoading && <div className="flex gap-4 ml-96 mt-4 mb-4">
+        <button className='bg-black text-white p-2' disabled={page === 1} onClick={() => setPage(prev => prev - 1)}>Previous</button>
+        <span>Page {page} of {data?.totalPages}</span>
+        <button className='bg-black text-white p-2' disabled={page === data?.totalPages} onClick={() => setPage(prev => prev + 1)}>Next</button>
+      </div>}
 
     </div>
   );
