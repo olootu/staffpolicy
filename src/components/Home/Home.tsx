@@ -125,6 +125,7 @@ const Home = () => {
       {pdfLoading &&
         <div className="flex justify-center items-center h-screen">
           <h2 className='text-xl font-bold'>Please wait...</h2>
+          <div className="w-10 h-10 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
         </div>
       }
 
@@ -143,7 +144,13 @@ const Home = () => {
           <h2 className='title'> {url.substring(60, url.indexOf('.pdf'))}</h2>
           <div
             onScroll={(e) => handleScroll(e, url)}
-            style={{ height: "500px", overflowY: "scroll", border: "1px solid #ccc" }}
+            style={{
+              height: "400px",
+              overflowY: "scroll",
+              border: "1px solid #222",
+              opacity: pdfLoading ? 0 : 1,
+              transition: "opacity 0.8s ease-in-out",
+            }}
           >
             <Document file={blobUrl} onLoadSuccess={onDocumentLoadSuccess}>
               <Page pageNumber={1} />
