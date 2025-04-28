@@ -1,8 +1,13 @@
-.doc {
+.doc, .doc-container {
     width: 40em;
     margin: 0 auto;
     border: 1px solid #ccc;
     padding: 10px;
+}
+
+.doc-container {
+    border: none;
+
 }
 
 .title {
