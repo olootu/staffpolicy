@@ -73,7 +73,7 @@ const Home = () => {
 
 
 
-  console.log(userInfoData)
+  console.log(userInfoData);
 
 
   const fetchAndSetBlobs = async (pdfLinks: string[]) => {
@@ -149,6 +149,7 @@ const Home = () => {
           profile,
           documentUrl: url,
           timestamp: new Date().toISOString(),
+          read_status: 'Yes'
         }),
       });
 
