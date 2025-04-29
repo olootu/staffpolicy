@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
@@ -18,10 +18,23 @@ const Home = () => {
     placeholderData: keepPreviousData
   });
 
-  const { data: userInfoData} = useQuery({
+  const { data: userInfoData } = useQuery({
     queryKey: ['userInfo'],
     queryFn: fetchInfoData
   });
+
+  const mergedDocuments = useMemo(() => {
+    const docs = data?.filtered || [];
+    const confirmations = userInfoData || [];
+
+    return docs.map((doc: any) => {
+      const isRead = confirmations.some(
+        (c: any) => c.document_url.substring(60, c.document_url.indexOf('.pdf')) === doc.source_url.substring(60, doc.source_url.indexOf('.pdf'))
+      );
+      return { ...doc, isRead };
+    });
+  }, [data, userInfoData]);
+
 
 
   const [pdfCache, setPdfCache] = useState<{ [url: string]: string }>({});
@@ -52,10 +65,10 @@ const Home = () => {
 
   async function fetchInfoData() {
     const response = await fetch(`https://staffpolicy-nodeserver.onrender.com/user_info/${profile?.user?.id}`);
-   
+
     const data = await response.json();
 
-    return  data;
+    return data;
   }
 
 
@@ -151,44 +164,44 @@ const Home = () => {
     setDisableLaunchButton(false)
   }
 
-
   return (
     <div className="doc-container p-6">
       <div className="flex justify-between">
-      <h2 className="text-2xl font-bold mb-4">Policy Documents</h2>  
-      
-      <p className='underline '>You have read: <span className='font-bold'>{userInfoData?.length}</span> {userInfoData && userInfoData.length > 1 ? 'documents' :'document'}</p>
+        <h2 className="text-2xl font-bold mb-4">Policy Documents</h2>
+
+        <p className='underline '>You have read: <span className='font-bold'>{userInfoData?.length}</span> {userInfoData && userInfoData.length > 1 ? 'documents' : 'document'}</p>
       </div>
 
       <div className="flex gap-4 mt-4 mb-4 w-96 ml-96">
-      
+
         <button className=' bg-black text-white pl-1 pr-1' disabled={page === 1} onClick={() => setPage(prev => prev - 1)}>Previous</button>
         <span>Page {page} of {data?.totalPages}</span>
         <button className=' bg-black text-white pl-1 pr-1' disabled={page === data?.totalPages} onClick={() => setPage(prev => prev + 1)}>Next</button>
       </div>
 
       <div className="space-y-4">
-        {data?.filtered.map((item: any, idx: number) => (
+        {mergedDocuments.map((item: any, idx: number) => (
           <div key={idx} className="mb-6">
-            <div className="doc pdf-link flex justify-between">
+            <div className={`doc pdf-link flex justify-between ${item.isRead ? 'bg-green-200 border-l-4 border-green-600 border-solid' : ''}`}>
               <span className="font-bold">{he.decode(item.title.rendered)}</span>
+              {item.isRead && <span className="text-green-600 text-sm">✔ Read</span>}
               <button
-                className={disableLaunchButton ? 'bg-gray-500 text-white px-3 py-1 rounded  ' : ' bg-red-600 text-white px-3 py-1 rounded '}
+                className={`${disableLaunchButton ? 'bg-gray-500 text-white px-3 py-1 rounded' : 'bg-red-600 text-white px-3 py-1 rounded'} ${item.isRead ? 'bg-green-500' : ''}`}
                 onClick={() => handlePdfClick(item.source_url)}
-                disabled={disableLaunchButton}
+                disabled={disableLaunchButton || item.isRead}
               >
                 View <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4 inline">
-  <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-</svg>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
 
               </button>
             </div>
             {pdfLoading && selectedPdf &&
-                    <div className="flex justify-center items-center h-screen">
-                      <h2 className='text-xl font-bold'>Please wait...</h2>
-                      <div className="w-4 h-4 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
-                    </div>
-                  }
+              <div className="flex justify-center items-center h-screen">
+                <h2 className='text-xl font-bold'>Please wait...</h2>
+                <div className="w-4 h-4 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+              </div>
+            }
             {selectedPdf?.substring(134, selectedPdf?.indexOf('.pdf')) === item.source_url?.substring(60, item.source_url.indexOf('.pdf')) && showCloseDocButton && (
               <div className="doc relative mt-4 fade-in transition-all duration-700">
                 {pdfLoading && (
@@ -213,8 +226,8 @@ const Home = () => {
                     transition: "opacity 0.8s ease-in-out",
                   }}
                 >
-                  
-                  
+
+
                   <Document file={selectedPdf} onLoadSuccess={onDocumentLoadSuccess}>
                     <Page pageNumber={1} />
                   </Document>
