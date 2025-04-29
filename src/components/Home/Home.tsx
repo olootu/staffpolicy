@@ -18,6 +18,11 @@ const Home = () => {
     placeholderData: keepPreviousData
   });
 
+  const { data: userInfoData} = useQuery({
+    queryKey: ['userInfo'],
+    queryFn: fetchInfoData
+  });
+
 
   const [pdfCache, setPdfCache] = useState<{ [url: string]: string }>({});
   const [readStatus, setReadStatus] = useState<boolean>(false);
@@ -42,11 +47,20 @@ const Home = () => {
       if (!item.media_category) return false;
       return item.media_category.some((cat: any) => cat.slug === "policydocs");
     });
-    console.log(filtered)
-    console.log('total', total)
-    console.log('total Pages', totalPages)
     return { filtered, total: Number(total), totalPages: Number(totalPages) }//filtered;
   }
+
+  async function fetchInfoData() {
+    const response = await fetch(`https://staffpolicy-nodeserver.onrender.com/user_info/${profile?.user?.id}`);
+   
+    const data = await response.json();
+
+    return  data;
+  }
+
+
+
+  console.log(userInfoData)
 
 
   const fetchAndSetBlobs = async (pdfLinks: string[]) => {
@@ -106,10 +120,8 @@ const Home = () => {
     setSelectedPdf(proxiedUrl);
     setPdfLoading(true);
     setShowCloseDocButton(true);
-    setDisableLaunchButton(true)
-    // confirmPdfIsRead(url)
-    setReadStatus(false)
-    console.log(readStatus)
+    setDisableLaunchButton(true);
+    setReadStatus(false);
   };
 
   const confirmPdfIsRead = async (url: string) => {
@@ -142,9 +154,14 @@ const Home = () => {
 
   return (
     <div className="doc-container p-6">
-      <h2 className="text-2xl font-bold mb-4">Policy Documents</h2>
+      <div className="flex justify-between">
+      <h2 className="text-2xl font-bold mb-4">Policy Documents</h2>  
+      
+      <p className='underline '>You have read: <span className='font-bold'>{userInfoData?.length}</span> {userInfoData && userInfoData.length > 1 ? 'documents' :'document'}</p>
+      </div>
 
       <div className="flex gap-4 mt-4 mb-4 w-96 ml-96">
+      
         <button className=' bg-black text-white pl-1 pr-1' disabled={page === 1} onClick={() => setPage(prev => prev - 1)}>Previous</button>
         <span>Page {page} of {data?.totalPages}</span>
         <button className=' bg-black text-white pl-1 pr-1' disabled={page === data?.totalPages} onClick={() => setPage(prev => prev + 1)}>Next</button>
@@ -208,7 +225,7 @@ const Home = () => {
                     className="mr-0 w-20"
                     type="checkbox"
                     disabled={!readStatus}
-                    onChange={() => confirmPdfIsRead('')}
+                    onChange={() => confirmPdfIsRead(item.source_url)}
                   />
                   <label className="mt-2 mr-4">
                     I confirm that I have read this document.

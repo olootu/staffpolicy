@@ -17,7 +17,7 @@ export const Register = () => {
 
   const isAuthenticated = !!localStorage.getItem('token');
 
-  const isAdmin = isAuthenticated && profile.user?.role === 'admin';
+  const isAdmin = isAuthenticated && profile.user?.role === 'Admin';
   const navigate = useNavigate();
 
   const formData = {
@@ -84,9 +84,9 @@ export const Register = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <select className='text-black ml-16' value={role} onChange={(e) => setRole(e.target.value)}>
-            <option value="staff">Staff</option>
+            <option value="Staff">Staff</option>
             {isAdmin && (
-              <option value="admin">Admin</option>
+              <option value="Admin">Admin</option>
             )}
           </select>
           <br />

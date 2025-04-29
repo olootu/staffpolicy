@@ -7,7 +7,7 @@ const NavBar = () => {
   const { user, setUser } = useContext(userContext);
 
   const isAuthenticated = !!user;
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role === 'Admin';
 
   const logOut = () => {
     localStorage.removeItem("token");

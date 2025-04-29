@@ -6,6 +6,7 @@ export interface ChildPro {
     username: string;
     password: string;
     name: string;
+    id: number,
     role: 'staff' | 'admin' | string;
   }
 

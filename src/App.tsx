@@ -22,7 +22,7 @@ function AppContent() {
         <Route path="/login" element={!user ?<Login />: <Navigate to="/dashboard" />} />
         <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="/policy" element={user ? <PolicyViewer /> : <Navigate to="/login" />} />
-        <Route path="/admin" element={user?.role === 'admin' ? <Admin /> : <Navigate to="/dashboard" />} />
+        <Route path="/admin" element={user?.role === 'Admin' ? <Admin /> : <Navigate to="/dashboard" />} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </Router>
