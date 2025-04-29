@@ -186,11 +186,11 @@ const Home = () => {
               <span className="font-bold">{he.decode(item.title.rendered)}</span>
               {item.isRead && <span className="text-green-600 text-sm">✔ Read</span>}
               <button
-                className={`${disableLaunchButton ? 'bg-gray-500 text-white px-3 py-1 rounded' : 'bg-red-600 text-white px-3 py-1 rounded'} ${item.isRead ? 'bg-green-500' : ''}`}
+                className={`text-white px-3 py-1 rounded ${disableLaunchButton ? 'bg-gray-500 text-white' : item.isRead ? 'bg-green-500' : 'bg-red-600'}`}
                 onClick={() => handlePdfClick(item.source_url)}
                 disabled={disableLaunchButton || item.isRead}
               >
-                View <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4 inline">
+                {item.isRead ? 'Completed': 'View'} <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4 inline">
                   <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                 </svg>
 
