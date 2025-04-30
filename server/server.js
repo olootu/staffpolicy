@@ -99,8 +99,6 @@ app.get('/users', (req, res) => {
             console.error("DB error:", err);
             return res.status(500).json({ message: "Something unexpected occurred", error: err });
         }
-
-        console.log('result:', result);
         return res.json(result);
     });
 });
@@ -168,8 +166,6 @@ app.post('/confirm-read', (req, res) => {
   const { profile, documentUrl, timestamp } = req.body;
 
   const doc_name = documentUrl.substring(60, documentUrl.indexOf('.pdf'));
-
-  console.log(profile.user.name);
 
   const sql = `
     INSERT INTO document_confirmations (user, document_name, document_url, timestamp)

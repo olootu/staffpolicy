@@ -64,16 +64,13 @@ const Home = () => {
   }
 
   async function fetchInfoData() {
-    const response = await fetch(`https://staffpolicy-nodeserver.onrender.com/user_info/${profile?.user?.id}`);
+    //const response = await fetch(`https://staffpolicy-nodeserver.onrender.com/user_info/${profile?.user?.id}`);
+    const response = await fetch(`http://localhost:8080/user_info/${profile?.user?.id}`);
 
     const data = await response.json();
 
     return data;
   }
-
-
-
-  console.log(userInfoData);
 
 
   const fetchAndSetBlobs = async (pdfLinks: string[]) => {
