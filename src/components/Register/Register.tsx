@@ -4,6 +4,7 @@ import './register.css'
 import { useNavigate } from 'react-router-dom';
 import { userContext } from '../../Context/Context';
 import { useMutation } from '@tanstack/react-query';
+//import Select from 'react-select';
 
 
 export const Register = () => {
@@ -27,6 +28,25 @@ export const Register = () => {
     password,
     role
   }
+
+  // const selectOptions = [
+  //   {value: 'staff', label: 'Staff'},
+  //  isAdmin? {value: 'admin', label: 'Admin'}: '',
+  // ]
+
+  // const selectCustomStyle = {
+  //   control: (provided:any) => ({
+  //     ...provided,
+  //     width: '320px',
+  //     marginLeft: '60px'
+  //   }),
+  //   option: (provided:any, state:any) =>({
+  //     ...provided,
+  //     color: 'black',
+  //     backgroundColor: state.isSelected ? 'lightGrey' : 'white'
+
+  //   })
+  // }
 
   const mutation = useMutation({
     mutationFn: () =>  axios.post('https://staffpolicy-nodeserver.onrender.com/add_user', formData)
@@ -89,6 +109,7 @@ export const Register = () => {
               <option value="Admin">Admin</option>
             )}
           </select>
+          {/* <Select options={selectOptions} styles={selectCustomStyle} onChange={(option:any) => setRole(option?.value)} /> */}
           <br />
           <br />
           <button type='submit' className='relative bottom-0 left-80 bg-blue-600 text-white p-2 rounded'>
